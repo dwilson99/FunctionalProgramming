@@ -13,8 +13,7 @@ def print_timing(function_name, start_time):
     print("---", function_name, " took  ",  round((timeEnd-start_time), 6), " seconds", "\n\n" )
     print('')
     
-
-
+##---------------------------------
 Scientist = collections.namedtuple('Scientist', [
     'name',
     'born',
@@ -30,20 +29,10 @@ scientists = (
     Scientist(name='Sally Ride', born=1951),
 )
 
-Scientist_2 = collections.namedtuple('Scientist_2', [
-    'name',
-    'born',
-])
-
 pprint(scientists)
 print()
 
-def process_item(item):
-    return {
-        'name': item.name,
-        'age': 2017 - item.born
-    }
-    
+ ##---------------------------------
 def transform(x):
     time.sleep(1)
     return {'name': x.name, 'age': 2017-x.born}
@@ -55,7 +44,7 @@ result = tuple(map(
         scientists
 ))
 pprint(result)
-print_timing('maps: ', start)
+print_timing('ordinary map: ', start)
 
 #------------------------
 start = time.time()
@@ -63,22 +52,4 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
         result = executor.map(transform, scientists)
         
 pprint(tuple(result))
-print_timing('futures: ', start)
-
-'''
-pool = multiprocessing.Pool()
-result_2 = tuple(pool.map(
-    transform, 
-    scientists
-))
-pprint(result_2)
-
-d = dict()
-for sc in scientists:
-   d.update( transform(sc) )
-pprint(d)
-'''
-
-#if __name__ == '__main__':
-#    freeze_support()
-#r    Process(pool.map).start()
+print_timing('futures map: ', start)
