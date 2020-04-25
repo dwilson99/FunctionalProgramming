@@ -2,8 +2,18 @@
 
 import collections
 from pprint import pprint
-import multiprocessing
-from multiprocessing import Pool, Process, freeze_support
+#import multiprocessing
+#from multiprocessing import Pool, Process, freeze_support
+import concurrent.futures
+import time
+
+##---------------------------------
+def print_timing(function_name, start_time):
+    timeEnd = time.time()
+    print("---", function_name, " took  ",  round((timeEnd-start_time), 6), " seconds", "\n\n" )
+    print('')
+    
+
 
 Scientist = collections.namedtuple('Scientist', [
     'name',
@@ -35,13 +45,25 @@ def process_item(item):
     }
     
 def transform(x):
+    time.sleep(1)
     return {'name': x.name, 'age': 2017-x.born}
     
+#------------------------
+start = time.time()
 result = tuple(map(
         transform,
         scientists
 ))
 pprint(result)
+print_timing('maps: ', start)
+
+#------------------------
+start = time.time()
+with concurrent.futures.ThreadPoolExecutor() as executor:
+        result = executor.map(transform, scientists)
+        
+pprint(tuple(result))
+print_timing('futures: ', start)
 
 '''
 pool = multiprocessing.Pool()
@@ -57,6 +79,6 @@ for sc in scientists:
 pprint(d)
 '''
 
-if __name__ == '__main__':
-    freeze_support()
+#if __name__ == '__main__':
+#    freeze_support()
 #r    Process(pool.map).start()
