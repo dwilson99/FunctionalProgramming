@@ -10,7 +10,7 @@ import time
 ##---------------------------------
 def print_timing(function_name, start_time):
     timeEnd = time.time()
-    print("---", function_name, " took  ",  round((timeEnd-start_time), 6), " seconds", "\n\n" )
+    print("---", function_name, " took  ",  round((timeEnd-start_time), 1), " seconds", "\n\n" )
     print('')
     
 ##---------------------------------
@@ -39,10 +39,7 @@ def transform(x):
     
 #------------------------
 start = time.time()
-result = tuple(map(
-        transform,
-        scientists
-))
+result = tuple(map(transform, scientists))
 pprint(result)
 print_timing('ordinary map: ', start)
 
