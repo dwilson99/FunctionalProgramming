@@ -12,7 +12,6 @@ from timeit import timeit
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from concurrent.futures import as_completed
 
-
 ##---------------------------------
 def print_timing(function_name, start_time):
     timeEnd = time.time()
@@ -38,8 +37,11 @@ def transform(item):
     return item
 
 #------------------------
-dict2 = random_dict(6000)
-#print('dict2: ', dict2, '\n\n')
+NUMBER_ITEMS = 500
+  
+dict2 = random_dict(NUMBER_ITEMS)
+if (NUMBER_ITEMS <8):
+    print('dict2: \t\t', dict2, '\n\n')
 dict_items = dict2.items()
 
 def convert_list_of_tuples_into_simple_list(input_list):
@@ -50,20 +52,37 @@ def convert_simple_list_to_dict(simp_list):
     it = iter(simp_list) 
     res_dct = dict(zip(it, it))
     return res_dct 
-      
-start = time.time()   
-result_list = list( map(transform, dict_items))
-simple_list = convert_list_of_tuples_into_simple_list(result_list)
-result_dict = convert_simple_list_to_dict(simple_list)
-print_timing('6000 items() in; dict out ',start)
+
+def convert_list_of_tuples_into_dict(input_tuple):
+    return [item for t in input_list for item in t]
+
+def convert_list_to_dict(a_list): 
+    simple_list_local = convert_list_of_tuples_into_simple_list(a_list)
+    dct = convert_simple_list_to_dict(simple_list_local)
+    return dct 
     
-def main():
+def test_map():
+    start = time.time()   
+    result_list = list( map(transform, dict_items))
+    simple_list = convert_list_of_tuples_into_simple_list(result_list)
+    result_dict = convert_simple_list_to_dict(simple_list)
+    dct2 = convert_list_to_dict(result_list)
+    if NUMBER_ITEMS < 8:
+        print('result_dict: \t', result_dict)
+    timing_name = str(NUMBER_ITEMS) + ' items() in; dict out '
+    print_timing(timing_name,start)
+
+def test_Thread_pool_map():
    with ThreadPoolExecutor(max_workers = 4) as executor:
-      start = time.time()   
-      results = list(executor.map(transform, dict_items))
-      simple_list = convert_list_of_tuples_into_simple_list(results)
-      result_dict = convert_simple_list_to_dict(simple_list)
-      print_timing('6000 ThreadPoolExecutor ',start)
+       start = time.time()   
+       results_list = list(executor.map(transform, dict_items))
+       result_dict = convert_list_to_dict(results_list)
+       timing_name2 = '\n' + str(NUMBER_ITEMS) + ' ThreadPoolExecutor '
+       print_timing(timing_name2,start)
+       
+def main():
+    test_map()
+    test_Thread_pool_map()
 
 if __name__ == '__main__':
-   main()
+    main()
